@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -58,6 +59,45 @@ namespace EmployeeADOProject
                         Console.WriteLine("No Data Found");
                     }
                     sqlData.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        public bool AddRecord(EmployeeModel Model)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand CMD = new SqlCommand("SpInsertEmployeePayroll", this.connection);
+                    CMD.CommandType = CommandType.StoredProcedure;
+                    CMD.Parameters.AddWithValue("@Id", Model.id);
+                    CMD.Parameters.AddWithValue("@name", Model.name);
+                    CMD.Parameters.AddWithValue("@basic_pay", Model.basic_pay);
+                    CMD.Parameters.AddWithValue("@start_Date", Model.start_date);
+                    CMD.Parameters.AddWithValue("@gender", Model.gender);
+                    CMD.Parameters.AddWithValue("@phoneNumber", Model.phone_number);
+                    CMD.Parameters.AddWithValue("@department", Model.department);
+                    CMD.Parameters.AddWithValue("@address", Model.address);
+                    CMD.Parameters.AddWithValue("@deduction", Model.Deduction);
+                    CMD.Parameters.AddWithValue("@taxable", Model.Taxable_pay);
+                    CMD.Parameters.AddWithValue("@income_tax", Model.Income_tax);
+                    CMD.Parameters.AddWithValue("@netpay", Model.Net_pay);
+                    this.connection.Open();
+                    var result = CMD.ExecuteNonQuery();
+                    this.connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (Exception e)
