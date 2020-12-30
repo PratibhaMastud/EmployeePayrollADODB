@@ -16,6 +16,7 @@ namespace EmployeeADOProject
             {
                 this.connection.Open();
                 Console.WriteLine("Connection Success");
+                this.connection.Close();
             }
             catch (Exception e)
             {
@@ -34,6 +35,7 @@ namespace EmployeeADOProject
                     SqlCommand cmd = new SqlCommand(query, this.connection);
                     this.connection.Open();
                     SqlDataReader sqlData = cmd.ExecuteReader();
+                    this.connection.Close();
                     if (sqlData.HasRows)
                     {
                         while (sqlData.Read())
@@ -67,9 +69,9 @@ namespace EmployeeADOProject
             }
             finally
             {
-                this.connection.Close();
             }
         }
+    
         public bool AddRecord(EmployeeModel Model)
         {
             try
@@ -106,7 +108,45 @@ namespace EmployeeADOProject
             }
             finally
             {
+            }
+        }
+
+        public void GetPerticularEmployeeData()
+        {
+            try
+            {
+                EmployeeModel employeemodel = new EmployeeModel();
+                using (this.connection)
+                {
+                    string query = @"SELECT basic_pay  from employee_payroll WHERE name = 'Pratibha'; ";
+                    SqlCommand cmd3 = new SqlCommand(query, this.connection);
+                    this.connection.Open();
+                    SqlDataReader readerRow = cmd3.ExecuteReader();
+                    if (readerRow.HasRows)
+                    {
+                        if (readerRow.HasRows)
+                        {
+                            while (readerRow.Read())
+                            {
+                                employeemodel.basic_pay = (double)readerRow.GetDecimal(0);
+                            }
+                            Console.WriteLine("Basic Pay for Pratibha is : {0}", employeemodel.basic_pay);
+                        }
+                        else
+                        {
+                            Console.WriteLine("No Data Found");
+                        }
+                    }
+                    readerRow.Close();
+                }
                 this.connection.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
             }
         }
     }
