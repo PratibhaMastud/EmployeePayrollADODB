@@ -16,8 +16,8 @@ namespace EmployeeADOProject
         public string department { get; set; }
         public string address { get; set; }
         public double Deduction { get; set; }
-        public SqlSingle Taxable_pay { get; set; }
+        public double Taxable_pay { get; set; }
         public double Income_tax { get; set; }
-        public SqlSingle Net_pay { get; set; }
+        public double Net_pay { get; set; }
     }
 }
