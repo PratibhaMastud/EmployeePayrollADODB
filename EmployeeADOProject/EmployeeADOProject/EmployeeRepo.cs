@@ -71,7 +71,7 @@ namespace EmployeeADOProject
             {
             }
         }
-    
+
         public bool AddRecord(EmployeeModel Model)
         {
             try
@@ -149,5 +149,95 @@ namespace EmployeeADOProject
             {
             }
         }
-    }
+
+        
+        public void ArithmeticOperations()
+        {
+            try
+            {
+                EmployeeModel arithModel = new EmployeeModel();
+                using (this.connection)
+                {
+                    using (SqlCommand CMD = new SqlCommand
+                        (
+                        @"SELECT SUM(basic_pay) FROM employee_payroll WHERE gender = 'M' GROUP BY gender;
+                        SELECT MIN(basic_pay) FROM employee_payroll WHERE gender = 'M' GROUP BY gender;
+                        SELECT MAX(basic_pay) FROM employee_payroll WHERE gender = 'F' GROUP BY gender;
+                        SELECT COUNT(id) FROM employee_payroll WHERE gender = 'F';
+                        SELECT SUM(basic_pay) FROM employee_payroll WHERE gender = 'F' GROUP BY gender;
+                        SELECT AVG(basic_pay) FROM employee_payroll WHERE gender = 'F' GROUP BY gender; 
+                        SELECT COUNT(id) FROM employee_payroll WHERE gender = 'M';", connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader readerAgg = CMD.ExecuteReader())
+                        {
+                            Console.WriteLine("\nMathemetical Function Operation on Female Employee");
+                            while (readerAgg.Read())
+                            {
+                                arithModel.basic_pay = (double)readerAgg.GetDecimal(0);
+                                Console.WriteLine("Sum of Basic Pay of Female Employee is : {0}", arithModel.basic_pay);
+                            }
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.basic_pay = (double)readerAgg.GetDecimal(0);
+                                    Console.WriteLine("Minimum of Basic Pay of Female Employee is : {0}", arithModel.basic_pay);
+                                }
+                            }
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.basic_pay = (double)readerAgg.GetDecimal(0);
+                                    Console.WriteLine("Maximum of Basic Pay of Female Employee is : {0}", arithModel.basic_pay);
+                                }
+                            }
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.id = readerAgg.GetInt32(0);
+                                    Console.WriteLine("Number of Male Employee present : {0}", arithModel.id);
+                                }
+                            }
+                            Console.WriteLine("\nArithmetic Function Operation on Male Employee");
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.basic_pay = (double)readerAgg.GetDecimal(0);
+                                    Console.WriteLine("Overall Sum of Basic Pay of Male Employee is : {0}", arithModel.basic_pay);
+                                }
+                            }
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.basic_pay = (double)readerAgg.GetDecimal(0);
+                                    Console.WriteLine("Average of Basic Pay of Male Employee is : {0}", arithModel.basic_pay);
+                                }
+                            }
+                            if (readerAgg.NextResult())
+                            {
+                                while (readerAgg.Read())
+                                {
+                                    arithModel.id = readerAgg.GetInt32(0);
+                                    Console.WriteLine("Number of Male Employee present : {0}", arithModel.id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+    } 
 }
